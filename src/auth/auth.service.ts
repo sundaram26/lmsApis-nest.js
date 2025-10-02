@@ -8,7 +8,7 @@ export class AuthService {
 
     constructor(private readonly userService: UserService){}
 
-    registerUser(registerUserDto: RegisterDto) {
+    async registerUser(registerUserDto: RegisterDto) {
         /**
          * 1. check if email already exists
          * 2. hash the password
@@ -18,7 +18,13 @@ export class AuthService {
          */
 
         const saltRound = 10;
-        const hashed = bcrypt.hash(registerUserDto.password, saltRound);
-        return this.userService.createUser({ ...registerUserDto, password: hash });
+        const hashed = await bcrypt.hash(registerUserDto.password, saltRound);
+        
+        const user = await this.userService.createUser({
+            ...registerUserDto,
+            password: hashed
+        });
+
+        return {}
     }
 }
